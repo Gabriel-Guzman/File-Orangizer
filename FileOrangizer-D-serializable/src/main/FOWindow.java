@@ -56,10 +56,6 @@ public class FOWindow extends JFrame {
 	private JTextField searchTextField;
 	public static File crashLog = new File("crashlog.txt");
 	private static JDialog editWindow;
-	private static LinkedList<Entry> entriesToSearch;
-	
-	
-
 	/**
 	 * Launch the application.
 	 * @throws URISyntaxException 
@@ -170,7 +166,7 @@ public class FOWindow extends JFrame {
 			e.printStackTrace();
 		}
 		
-		entriesToSearch = new LinkedList<Entry>();
+		new LinkedList<Entry>();
 		
 		setTitle("FileOrangizer");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -93,4 +93,13 @@ public class Organization {
 		return found;
 	}
 	
+	public static String[] parseSearch (String search) {
+		String[] split = search.split(",");
+		for (int i = 0; i < split.length; i++) {
+			split[i] = split[i].trim().replaceAll("\\s+", " ");;
+		}
+		
+		return split;
+	}
+	
 }

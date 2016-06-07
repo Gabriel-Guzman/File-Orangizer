@@ -78,12 +78,10 @@ public class SingleEntryEditWindow extends JDialog {
 				if(textField.getText().length() != 0) {
 					changed = true;
 					DLMlist.clear();
-					String[] input = textField.getText().split(",");
+					String[] input = Organization.parseSearch(textField.getText());
 					for (String tag : input) {
-						String tempTag = tag;
-						tempTag = tempTag.trim().replaceAll("\\s+", " ");
-						if(!FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).getTags().contains(tempTag))
-							FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).addTag(tempTag);
+						if(!FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).getTags().contains(tag))
+							FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).addTag(tag);
 					}
 					Collections.sort( FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).tags);
 					for (String tag : FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).tags) {
@@ -99,7 +97,7 @@ public class SingleEntryEditWindow extends JDialog {
 		JButton btnNewButton_1 = new JButton("Remove Tags");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for (int i = list.getSelectedIndices().length - 1; i > 0; i--) {
+				for (int i = list.getSelectedIndices().length - 1; i >= 0; i--) {
 					FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).removeTag(list.getSelectedIndices()[i]);
 				}
 				
@@ -125,8 +123,9 @@ public class SingleEntryEditWindow extends JDialog {
 							FOWindow.savePaths();
 						} catch (IOException e1) {
 							e1.printStackTrace();
+						} finally {
+							changed = false;
 						}
-						
 					}
 				});
 				okButton.setActionCommand("OK");
