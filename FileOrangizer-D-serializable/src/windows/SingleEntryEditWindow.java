@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import main.Entry;
@@ -53,6 +54,7 @@ public class SingleEntryEditWindow extends JDialog {
 		
 		DefaultListModel DLMlist = new DefaultListModel();
 		JList list = new JList(DLMlist);
+		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		scrollPane.setViewportView(list);
 		for (String tag : FOWindow.paths.get(indexOfDirectoryInPaths).getEntryAt(indexOfEntryInDirectory).getTags()) {
 			DLMlist.addElement(tag);
@@ -133,7 +135,7 @@ public class SingleEntryEditWindow extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Close");
+				JButton cancelButton = new JButton("Done");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						

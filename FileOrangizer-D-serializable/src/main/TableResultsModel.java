@@ -23,7 +23,7 @@ public class TableResultsModel extends DefaultTableModel {
 		for (String tag : tableEntry.getTags()) {
 			tagsString += tag + ", ";
 		}
-		this.addRow(new Object[]{ tableEntry.getFileName(), tableEntry.getParentFolder(), tagsString});
+		this.addRow(new Object[]{ tableEntry.getName(), tableEntry.getParentFolder(), tagsString});
 	}
 	
 	

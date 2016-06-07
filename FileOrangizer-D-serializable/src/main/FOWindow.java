@@ -1,6 +1,8 @@
 package main;
 
+import java.awt.Desktop;
 import java.awt.EventQueue;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -21,7 +23,6 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -42,7 +43,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileFilter;
 
 import windows.DirectoryRestrictedFileSystemView;
 
@@ -250,6 +250,25 @@ public class FOWindow extends JFrame {
 					"File Name", "Parent Folder", "Tags"
 				}
 		);
+		table.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent me) {
+		        JTable table =(JTable) me.getSource();
+		        Point p = me.getPoint();
+		        int row = table.rowAtPoint(p);
+		        if (me.getClickCount() == 2) {
+		        	File f = new File(tableDLM.getRow(table.getSelectedRow()).getAbsolutePath());
+		            Desktop dt = Desktop.getDesktop();
+		            try {
+						dt.open(f);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		            System.out.println("Done.");
+		        }
+		    }
+		});
+		
 		
 		table.setModel(tableDLM);
 		scrollPane_1.setViewportView(table);
@@ -259,8 +278,6 @@ public class FOWindow extends JFrame {
 		searchTextField.setBounds(10, 42, 395, 26);
 		contentPane.add(searchTextField);
 		
-		tableDLM.addRow(new Object[]{"HEY", "man"});
-		
 		JButton searchButton = new JButton("Search tag(s)");
 		
 		searchButton.addActionListener(new ActionListener() {
@@ -268,19 +285,13 @@ public class FOWindow extends JFrame {
 				//Emptying the results
 				tableDLM.empty();
 				
-				//Takes in the text from
-				LinkedList<String> queryList = new LinkedList<String>(Arrays.asList(searchTextField.getText().split(",")));
-				for (int i = 0; i < queryList.size(); i ++) {
-					queryList.set(i, queryList.get(i).trim());
-				}
-				
 				LinkedList<Entry> entryResults = new LinkedList<Entry>();
 				
-				int[] selection = list.getSelectedIndices();
-				for (String query : queryList) {
-					for (int index : selection) {
-						for (Entry entry : DLMDirectoriesToInclude.getDirectory(index).getEntries()) {
-							if (entry.getTags().contains(query) && !entryResults.contains(entry)) 
+				//Takes in the text from
+				for (String tag : Organization.parseSearch(searchTextField.getText())) {
+					for (int directoryIndex : list.getSelectedIndices()) {
+						for (Entry entry : DLMDirectoriesToInclude.getDirectory(directoryIndex).getEntries()) {
+							if (entry.getTags().contains(tag))
 								entryResults.add(entry);
 						}
 					}
@@ -348,7 +359,7 @@ public class FOWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (tableDLM.rows.size() > 0)
-					Runtime.getRuntime().exec("explorer.exe " + tableDLM.getRow(table.getSelectedRow()).getAbsolutePath());
+						Runtime.getRuntime().exec("explorer.exe /select," + tableDLM.getRow(table.getSelectedRow()).getAbsolutePath());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
